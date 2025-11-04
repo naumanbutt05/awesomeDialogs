@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Artboard;
+import 'package:rive_native/rive_native.dart' as rive_native;
 
 ///RiveRuntimeRender
 class RiveAssetAnimation extends StatefulWidget {
@@ -22,16 +23,16 @@ class RiveAssetAnimation extends StatefulWidget {
 }
 
 class _RiveAnimationState extends State<RiveAssetAnimation> {
-  late File? file;
-  Artboard? artboard;
-  late SingleAnimationPainter _painter;
+  late rive_native.File? file;
+  rive_native.Artboard? artboard;
+  late rive_native.SingleAnimationPainter _painter;
   bool loading = true;
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      file = await File.asset(widget.assetPath, riveFactory: Factory.flutter);
-      _painter = SingleAnimationPainter(widget.animName);
+      file = await rive_native.File.asset(widget.assetPath, riveFactory: rive_native.Factory.flutter);
+      _painter = rive_native.SingleAnimationPainter(widget.animName);
       artboard = file?.defaultArtboard();
       loading = false;
       setState(() {});
@@ -42,6 +43,6 @@ class _RiveAnimationState extends State<RiveAssetAnimation> {
   Widget build(BuildContext context) {
     return loading
         ? const SizedBox.shrink()
-        : RiveArtboardWidget(artboard: artboard!, painter: _painter);
+        : rive_native.RiveArtboardWidget(artboard: artboard!, painter: _painter);
   }
 }
